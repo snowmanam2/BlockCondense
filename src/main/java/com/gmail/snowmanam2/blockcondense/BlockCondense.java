@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -48,7 +49,7 @@ public class BlockCondense extends JavaPlugin {
 		this.convertStacks(p, ingredient, divisor, product, false);
 	}
 	
-	private void convertStacks (Player p, Material ingredient, int divisor, Material product, boolean truncate) {
+	private int convertStacks (Player p, Material ingredient, int divisor, Material product, boolean returnExcess) {
 		
 		Inventory inv = p.getInventory();
 		HashMap<Integer, ? extends ItemStack> stacks = inv.all(ingredient);
@@ -65,15 +66,17 @@ public class BlockCondense extends JavaPlugin {
 			inv.remove(ingredient);
 			this.addItemsToInventory(inv, product, productQty);
 			
-			p.sendMessage("Converted "+ingredientQty+" "+ingredientName+" to "+productQty+" "+productName);
+			p.sendMessage(ChatColor.GREEN.toString()+"Converted "+ingredientQty+" "+ingredientName+" to "+productQty+" "+productName);
 			
-			if (!truncate) {
+			if (!returnExcess) {
 				this.addItemsToInventory(inv, ingredient, leftoverQty);
-				p.sendMessage("Returned "+leftoverQty+" "+ingredientName);
+				p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredientName);
 			}
 		} else {
-			p.sendMessage("Not enough "+ingredientName);
+			p.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredientName);
 		}
+		
+		return productQty;
 		
 	}
 	
