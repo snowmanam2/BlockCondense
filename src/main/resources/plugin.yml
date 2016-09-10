@@ -6,16 +6,24 @@ commands:
   condense:
     description: Condense ingots into blocks
     usage: /condense
+    aliases: [block]
     permission: blockcondense.condense
-    permission-message: You don't have permission to do that.
   gold:
     description: Turn nuggets into ingots
     usage: /gold
     permission: blockcondense.gold
-    permission-message: You don't have permission to do that.
   gunpowder:
     description: Turn gunpowder into TNT
     usage: /gunpowder
-    aliases: [gp]
+    aliases: [gp, tnt]
     permission: blockcondense.gunpowder
-    permission-message: You don't have permission to do that.
+permissions:
+  blockcondense.condense:
+    description: Access /condense
+    default: op
+  blockcondense.gold:
+    description: Access /gold
+    default: op
+  blockcondense.gunpowder:
+    description: Access /gunpowder
+    default: op
