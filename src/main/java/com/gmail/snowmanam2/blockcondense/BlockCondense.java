@@ -1,5 +1,8 @@
 package com.gmail.snowmanam2.blockcondense;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -21,18 +24,33 @@ public class BlockCondense extends JavaPlugin {
 			ItemType lapis = new ItemType(Material.INK_SACK, (short) 4);
 			lapis.setName("lapis"); 
 			
-			this.convertStacks(p, lapis, 9, new ItemType(Material.LAPIS_BLOCK));
-			this.convertStacks(p, new ItemType(Material.GOLD_INGOT), 9, new ItemType(Material.GOLD_BLOCK));
-			this.convertStacks(p, new ItemType(Material.IRON_INGOT), 9, new ItemType(Material.IRON_BLOCK));
-			this.convertStacks(p, new ItemType(Material.EMERALD),    9, new ItemType(Material.EMERALD_BLOCK));
-			this.convertStacks(p, new ItemType(Material.DIAMOND),    9, new ItemType(Material.DIAMOND_BLOCK));
+			List<Ingredient> lapisIngredients = new ArrayList<Ingredient>();
+			lapisIngredients.add(new Ingredient(lapis, 9));
+			convertStacks(p, lapisIngredients, new ItemType(Material.LAPIS_BLOCK));
+			
+			List<Ingredient> goldIngredients = new ArrayList<Ingredient>();
+			goldIngredients.add(new Ingredient(new ItemType(Material.GOLD_INGOT), 9));
+			convertStacks(p, goldIngredients, new ItemType(Material.GOLD_BLOCK));
+			
+			List<Ingredient> ironIngredients = new ArrayList<Ingredient>();
+			ironIngredients.add(new Ingredient(new ItemType(Material.IRON_INGOT), 9));
+			convertStacks(p, ironIngredients, new ItemType(Material.IRON_BLOCK));
+			
+			List<Ingredient> emeraldIngredients = new ArrayList<Ingredient>();
+			emeraldIngredients.add(new Ingredient(new ItemType(Material.EMERALD), 9));
+			convertStacks(p, emeraldIngredients, new ItemType(Material.EMERALD_BLOCK));
+			
+			List<Ingredient> diamondIngredients = new ArrayList<Ingredient>();
+			diamondIngredients.add(new Ingredient(new ItemType(Material.DIAMOND), 9));
+			convertStacks(p, diamondIngredients, new ItemType(Material.DIAMOND_BLOCK));
 			
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("gold")) {
 			Player p = (Player) sender;
 			
-			
-			this.convertStacks(p, new ItemType(Material.GOLD_NUGGET), 9, new ItemType(Material.GOLD_INGOT));
+			List<Ingredient> goldIngredients = new ArrayList<Ingredient>();
+			goldIngredients.add(new Ingredient(new ItemType(Material.GOLD_NUGGET), 9));
+			this.convertStacks(p, goldIngredients, new ItemType(Material.GOLD_INGOT));
 			
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("gunpowder")) {
@@ -44,43 +62,48 @@ public class BlockCondense extends JavaPlugin {
 			ItemType tnt = new ItemType(Material.TNT);
 			tnt.setName("TNT");
 			
-			this.convertStacks(p, gunpowder, 5, tnt);
+			List<Ingredient> tntIngredients = new ArrayList<Ingredient>();
+			tntIngredients.add(new Ingredient(gunpowder, 5));
+			tntIngredients.add(new Ingredient(new ItemType(Material.SAND), 4));
+			this.convertStacks(p, tntIngredients, tnt);
+			
 			return true;
 		}
 		return false;
 	}
 	
-	private void convertStacks (Player p, ItemType ingredient, int divisor, ItemType product) {
-		this.convertStacks(p, ingredient, divisor, product, false);
-	}
-	
-	private int convertStacks (Player p, ItemType ingredient, int divisor, ItemType product, boolean returnExcess) {
-		
+	private void convertStacks(Player p, List<Ingredient> ingredients, ItemType product) {
 		Inventory inv = p.getInventory();
 		
-		int ingredientQty = ingredient.getAmountInInventory(inv);
-		int productQty = ingredientQty / divisor;
-		int leftoverQty = ingredientQty % divisor;
+		int productQty = -1;
 		
-		
-		String productName = product.getName();
-		String ingredientName = ingredient.getName();
-		if (productQty > 0) {
+		for (Ingredient ingredient : ingredients) {
+			ingredient.loadAvailableAmount(inv);
 			
-			ingredient.removeFromInventory(inv);
-			product.addToInventory(inv, productQty);
+			int productAvailable = ingredient.getProductAmount();
 			
-			p.sendMessage(ChatColor.GREEN.toString()+"Converted "+ingredientQty+" "+ingredientName+" to "+productQty+" "+productName);
-			
-			if (!returnExcess) {
-				ingredient.addToInventory(inv, leftoverQty);
-				p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredientName);
+			if (productQty < 0) {
+				productQty = productAvailable;
+			} else {
+				productQty = Math.min(productQty, productAvailable);
 			}
-		} else {
-			p.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredientName);
+			
+			if (productAvailable == 0) {
+				p.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredient.getItem().getName());
+			}
 		}
 		
-		return productQty;
+		if (productQty == 0) {
+			return;
+		}
 		
+		p.sendMessage(ChatColor.GREEN.toString()+"Converting ingredients to "+productQty+" "+product.getName());
+		
+		for (Ingredient ingredient : ingredients) {
+			int leftoverQty = ingredient.processConversion(inv, productQty);
+			p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredient.getItem().getName());
+		}
+		
+		product.addToInventory(inv, productQty);
 	}
 }

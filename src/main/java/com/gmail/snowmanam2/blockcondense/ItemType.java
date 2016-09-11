@@ -108,6 +108,10 @@ public class ItemType {
 	 * Returns the amount that could not be added to the inventory
 	 */
 	public int addToInventory (Inventory inv, int quantity) {
+		if (quantity == 0) {
+			return 0;
+		}
+		
 		ItemStack stack = item.clone();
 		stack.setAmount(quantity);
 		
