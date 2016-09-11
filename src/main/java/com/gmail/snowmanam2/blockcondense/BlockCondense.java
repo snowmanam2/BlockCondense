@@ -73,12 +73,13 @@ public class BlockCondense extends JavaPlugin {
 	}
 	
 	private void convertStacks(Player p, List<Ingredient> ingredients, ItemType product) {
-		Inventory inv = p.getInventory();
+		
+		InventoryWrapper inv = new InventoryWrapper(p.getInventory());
 		
 		int productQty = -1;
 		
 		for (Ingredient ingredient : ingredients) {
-			ingredient.loadAvailableAmount(inv);
+			ingredient.setAvailableAmount(inv.getItemAmount(ingredient.getItem()));
 			
 			int productAvailable = ingredient.getProductAmount();
 			
@@ -104,6 +105,6 @@ public class BlockCondense extends JavaPlugin {
 			p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredient.getItem().getName());
 		}
 		
-		product.addToInventory(inv, productQty);
+		inv.addItem(product, productQty);
 	}
 }

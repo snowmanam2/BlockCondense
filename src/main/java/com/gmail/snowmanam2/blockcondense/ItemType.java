@@ -1,13 +1,7 @@
 package com.gmail.snowmanam2.blockcondense;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-/* Workaround wrapper class for Bukkit's inventory system */
 
 public class ItemType {
 	private ItemStack item;
@@ -47,76 +41,18 @@ public class ItemType {
 		name = newname;
 	}
 	
-	/* getAmountInInventory
-	 * Returns the total quantity of all matching stacks from the given Inventory.
-	 * Note the items counted in this method differ from Bukkit's Inventory.all
-	 * because the latter doesn't count stacks with different quantities,
-	 * which doesn't make much sense.
-	 */
-	public int getAmountInInventory (Inventory inv) {
-		int qty = 0;
-		
-		for (ItemStack stack : inv.getContents()) {
-			if (stack != null) {
-				if (stack.isSimilar(item)) {
-					qty += stack.getAmount();
-				}
-			}
-		}
-		
-		return qty;
+	public Material getMaterial () {
+		return item.getType();
 	}
 	
-	/* removeFromInventory
-	 * Removes all matching stacks from the given inventory.
-	 * Note this differs from Bukkit's Inventory.remove because
-	 * the latter doesn't count stacks with different quantities,
-	 * which doesn't make much sense.
-	 */
-	public void removeFromInventory (Inventory inv) {
-		for (ItemStack stack : inv.getContents()) {
-			if (stack != null) {
-				if (stack.isSimilar(item)) {
-					inv.remove(stack);
-				}
-			}
-		}
+	public int getMaxStackSize () {
+		return item.getMaxStackSize();
 	}
 	
-	/* getStacksQuantity
-	 * Returns the total quantity of a list of stacks, as returned by the Bukkit
-	 * Inventory methods.
-	 */
-	@SuppressWarnings("unchecked")
-	private int getStacksQuantity (Map<Integer, ? extends ItemStack> stacks) {
-		Iterator<?> itr = stacks.entrySet().iterator();
-		
-		int qty = 0;
-		
-		while (itr.hasNext()) {
-			Map.Entry<Integer, ItemStack> pair = (Map.Entry<Integer, ItemStack>) itr.next();
-			ItemStack is = pair.getValue();
-			
-			qty += is.getAmount();
-		}
-		
-		return qty;
+	public boolean isSimilar (ItemType other) {
+		return item.isSimilar(other.item);
 	}
 	
-	/* addToInventory
-	 * Adds a quantity of this ItemType to the given inventory
-	 * Returns the amount that could not be added to the inventory
-	 */
-	public int addToInventory (Inventory inv, int quantity) {
-		if (quantity == 0) {
-			return 0;
-		}
-		
-		ItemStack stack = item.clone();
-		stack.setAmount(quantity);
-		
-		Map<Integer, ItemStack> remainder = inv.addItem(stack);
-		
-		return getStacksQuantity(remainder);
-	}
+
+
 }

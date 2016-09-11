@@ -1,7 +1,5 @@
 package com.gmail.snowmanam2.blockcondense;
 
-import org.bukkit.inventory.Inventory;
-
 public class Ingredient {
 	private ItemType item;
 	private int requiredAmount;
@@ -20,8 +18,8 @@ public class Ingredient {
 		return requiredAmount;
 	}
 	
-	public void loadAvailableAmount(Inventory inv)  {
-		availableAmount = item.getAmountInInventory(inv);
+	public void setAvailableAmount(int amount)  {
+		availableAmount = amount;
 	}
 	
 	public int getAvailableAmount() {
@@ -36,11 +34,11 @@ public class Ingredient {
 		return availableAmount / requiredAmount;
 	}
 	
-	public int processConversion(Inventory inv, int productQty) {
-		item.removeFromInventory(inv);
+	public int processConversion(InventoryWrapper inv, int productQty) {
+		inv.removeItem(item);
 		int leftover = getLeftoverAmount(productQty);
 		
-		item.addToInventory(inv, leftover);
+		inv.addItem(item, leftover);
 		
 		return leftover;
 	}
