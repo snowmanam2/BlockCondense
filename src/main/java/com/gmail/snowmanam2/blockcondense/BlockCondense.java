@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockCondense extends JavaPlugin {
@@ -20,41 +19,45 @@ public class BlockCondense extends JavaPlugin {
 		
 		if (cmd.getName().equalsIgnoreCase("condense")) {
 			Player p = (Player) sender;
+			InventoryWrapper inv = new InventoryWrapper(p.getInventory());
 			
 			ItemType lapis = new ItemType(Material.INK_SACK, (short) 4);
 			lapis.setName("lapis"); 
 			
 			List<Ingredient> lapisIngredients = new ArrayList<Ingredient>();
-			lapisIngredients.add(new Ingredient(lapis, 9));
+			lapisIngredients.add(new ItemIngredient(lapis, 9, inv));
 			convertStacks(p, lapisIngredients, new ItemType(Material.LAPIS_BLOCK));
 			
 			List<Ingredient> goldIngredients = new ArrayList<Ingredient>();
-			goldIngredients.add(new Ingredient(new ItemType(Material.GOLD_INGOT), 9));
+			goldIngredients.add(new ItemIngredient(new ItemType(Material.GOLD_INGOT), 9, inv));
 			convertStacks(p, goldIngredients, new ItemType(Material.GOLD_BLOCK));
 			
 			List<Ingredient> ironIngredients = new ArrayList<Ingredient>();
-			ironIngredients.add(new Ingredient(new ItemType(Material.IRON_INGOT), 9));
+			ironIngredients.add(new ItemIngredient(new ItemType(Material.IRON_INGOT), 9, inv));
 			convertStacks(p, ironIngredients, new ItemType(Material.IRON_BLOCK));
 			
 			List<Ingredient> emeraldIngredients = new ArrayList<Ingredient>();
-			emeraldIngredients.add(new Ingredient(new ItemType(Material.EMERALD), 9));
+			emeraldIngredients.add(new ItemIngredient(new ItemType(Material.EMERALD), 9, inv));
 			convertStacks(p, emeraldIngredients, new ItemType(Material.EMERALD_BLOCK));
 			
 			List<Ingredient> diamondIngredients = new ArrayList<Ingredient>();
-			diamondIngredients.add(new Ingredient(new ItemType(Material.DIAMOND), 9));
+			diamondIngredients.add(new ItemIngredient(new ItemType(Material.DIAMOND), 9, inv));
 			convertStacks(p, diamondIngredients, new ItemType(Material.DIAMOND_BLOCK));
 			
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("gold")) {
 			Player p = (Player) sender;
+			InventoryWrapper inv = new InventoryWrapper(p.getInventory());
 			
 			List<Ingredient> goldIngredients = new ArrayList<Ingredient>();
-			goldIngredients.add(new Ingredient(new ItemType(Material.GOLD_NUGGET), 9));
+			goldIngredients.add(new ItemIngredient(new ItemType(Material.GOLD_NUGGET), 9, inv));
 			this.convertStacks(p, goldIngredients, new ItemType(Material.GOLD_INGOT));
 			
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("gunpowder")) {
 			Player p = (Player) sender;
+			InventoryWrapper inv = new InventoryWrapper(p.getInventory());
+			EconomyWrapper econ = new EconomyWrapper(p);
 			
 			ItemType gunpowder = new ItemType(Material.SULPHUR);
 			gunpowder.setName("gunpowder");
@@ -63,8 +66,9 @@ public class BlockCondense extends JavaPlugin {
 			tnt.setName("TNT");
 			
 			List<Ingredient> tntIngredients = new ArrayList<Ingredient>();
-			tntIngredients.add(new Ingredient(gunpowder, 5));
-			tntIngredients.add(new Ingredient(new ItemType(Material.SAND), 4));
+			tntIngredients.add(new ItemIngredient(gunpowder, 5, inv));
+			//tntIngredients.add(new ItemIngredient(new ItemType(Material.SAND), 4, inv));
+			tntIngredients.add(new MoneyIngredient(1.5, econ));
 			this.convertStacks(p, tntIngredients, tnt);
 			
 			return true;
@@ -79,7 +83,6 @@ public class BlockCondense extends JavaPlugin {
 		int productQty = -1;
 		
 		for (Ingredient ingredient : ingredients) {
-			ingredient.setAvailableAmount(inv.getItemAmount(ingredient.getItem()));
 			
 			int productAvailable = ingredient.getProductAmount();
 			
@@ -90,7 +93,7 @@ public class BlockCondense extends JavaPlugin {
 			}
 			
 			if (productAvailable == 0) {
-				p.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredient.getItem().getName());
+				p.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredient.getName());
 			}
 		}
 		
@@ -101,8 +104,11 @@ public class BlockCondense extends JavaPlugin {
 		p.sendMessage(ChatColor.GREEN.toString()+"Converting ingredients to "+productQty+" "+product.getName());
 		
 		for (Ingredient ingredient : ingredients) {
-			int leftoverQty = ingredient.processConversion(inv, productQty);
-			p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredient.getItem().getName());
+			int leftoverQty = ingredient.processConversion(productQty);
+			
+			if (leftoverQty > 0) {
+				p.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredient.getName());
+			}
 		}
 		
 		inv.addItem(product, productQty);

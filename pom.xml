@@ -5,9 +5,13 @@
    <version>0.0.1-SNAPSHOT</version>
    <repositories>
        <repository>
-            <id>spigot-repo</id>
-            <url>http://hub.spigotmc.org/nexus/content/groups/public</url>
-        </repository>
+           <id>spigot-repo</id>
+           <url>http://hub.spigotmc.org/nexus/content/groups/public</url>
+       </repository>
+       <repository>
+           <id>ess-repo</id>
+           <url>http://repo.ess3.net/content/groups/essentials</url>
+       </repository>
    </repositories>
    <dependencies>
        <dependency>
@@ -16,6 +20,11 @@
            <version>1.8-R0.1-SNAPSHOT</version>
            <type>jar</type>
            <scope>provided</scope>
+       </dependency>
+       <dependency>
+           <groupId>net.ess3</groupId>
+           <artifactId>Essentials</artifactId>
+           <version>2.13-SNAPSHOT</version>
        </dependency>
    </dependencies>
 </project>
