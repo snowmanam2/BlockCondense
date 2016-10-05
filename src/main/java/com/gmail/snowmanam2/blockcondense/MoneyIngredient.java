@@ -1,39 +1,39 @@
 package com.gmail.snowmanam2.blockcondense;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MoneyIngredient implements Ingredient {
 	private double requiredAmount;
 	private BigDecimal availableAmount = new BigDecimal(0);
-	private EconomyWrapper economy;
 	
-	public MoneyIngredient (double requiredAmount, EconomyWrapper economy) {
+	public MoneyIngredient (double requiredAmount) {
 		this.requiredAmount = requiredAmount;
-		this.economy = economy;
-		this.availableAmount = economy.getMoney();
 	}
 	
-	public int processConversion(int productQty) {
-		BigDecimal amount = new BigDecimal (requiredAmount * productQty);
-		economy.subtract(amount);
-		
-		return 0;
-	}
-
-	public int getAvailableAmount() {
-		return availableAmount.intValue();
+	public String getName() {
+		return "money";
 	}
 
 	public int getLeftoverAmount(int productQuantity) {
 		return 0;
 	}
 
-	public int getProductAmount() {
-		return availableAmount.divide(new BigDecimal(requiredAmount)).intValue();
+	public int loadMaximumProductAmount(ConversionContext context) {
+		availableAmount = context.getEconomy().getMoney();
+		
+		if (requiredAmount == 0) {
+			return Integer.MAX_VALUE;
+		}
+		
+		return availableAmount.divide(new BigDecimal(requiredAmount), RoundingMode.HALF_UP).intValue();
 	}
-
-	public String getName() {
-		return "money";
+	
+	public int processConversion(ConversionContext context, int productQty) {
+		BigDecimal amount = new BigDecimal (requiredAmount * productQty);
+		context.getEconomy().subtract(amount);
+		
+		return 0;
 	}
 
 }
