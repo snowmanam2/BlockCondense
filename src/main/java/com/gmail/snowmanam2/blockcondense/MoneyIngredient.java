@@ -26,7 +26,14 @@ public class MoneyIngredient implements Ingredient {
 			return Integer.MAX_VALUE;
 		}
 		
-		return availableAmount.divide(new BigDecimal(requiredAmount), RoundingMode.HALF_UP).intValue();
+		/* Computes: maximumProductAmount = availableAmount / requiredAmount 
+		 * Note the value is clamped in the integer limits to prevent duping */
+		BigDecimal rawAmount = availableAmount.divide(new BigDecimal(requiredAmount), RoundingMode.HALF_UP);
+		rawAmount = rawAmount.min(new BigDecimal(Integer.MAX_VALUE));
+		rawAmount = rawAmount.max(new BigDecimal(Integer.MIN_VALUE));
+		
+		return rawAmount.intValue();
+		
 	}
 	
 	public int processConversion(ConversionContext context, int productQty) {

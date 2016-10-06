@@ -23,13 +23,12 @@ public class Recipe {
 			
 			productQty = Math.min(productQty, productAvailable);
 
-			
-			if (productAvailable == 0) {
+			if (productAvailable <= 0) {
 				context.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredient.getName());
 			}
 		}
 		
-		if (productQty == 0) {
+		if (productQty <= 0) {
 			return;
 		}
 		
