@@ -4,20 +4,14 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockCondense extends JavaPlugin {
-	private FileConfiguration config = getConfig();
 	private RecipeManager recipeManager;
 	
 	@Override
 	public void onEnable() {
-		config = getConfig();
-		config.addDefault("tntCost", 1.5);
-		config.options().copyDefaults(true);
-		saveConfig();
 		
 		recipeManager = new RecipeManager(this); 
 	}

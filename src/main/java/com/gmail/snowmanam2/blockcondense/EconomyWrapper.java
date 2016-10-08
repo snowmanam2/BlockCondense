@@ -30,7 +30,8 @@ public class EconomyWrapper {
 	public void subtract(BigDecimal amount) {
 		try {
 			Economy.substract(player.getName(), amount);
-			player.sendMessage(ChatColor.GRAY+"$"+amount.toPlainString()+" was taken from your account.");
+			String amountString = Economy.format(amount);
+			player.sendMessage(ChatColor.GRAY+amountString+" was taken from your account.");
 		} catch (UserDoesNotExistException e) {
 			
 		} catch (NoLoanPermittedException e) {

@@ -29,6 +29,11 @@ public class RecipeManager {
 	
 	private void buildRecipeList() {
 		File recipeFile = new File(plugin.getDataFolder(), "recipes.yml");
+		
+		if (!recipeFile.exists()) {
+			plugin.saveResource("recipes.yml", false);
+		}
+		
 		FileConfiguration recipeConfig = YamlConfiguration.loadConfiguration(recipeFile);
 		
 		for (String key: recipeConfig.getKeys(false)) {
@@ -82,7 +87,7 @@ public class RecipeManager {
 		Set<String> keys = productConfig.getKeys(false);
 		
 		if (keys.contains("item")) {
-			ItemType productType = ItemType.buildFromString(plugin, productConfig.getString("item"));
+			ItemType productType = ItemType.buildFromString(productConfig.getString("item"));
 			if (keys.contains("name")) {
 				productType.setName(productConfig.getString("name"));
 			}
@@ -121,7 +126,7 @@ public class RecipeManager {
 				
 				ingredient = new MoneyIngredient(cost);
 			} else {
-				ItemType ingredientType = ItemType.buildFromString(plugin, ingredientItem);
+				ItemType ingredientType = ItemType.buildFromString(ingredientItem);
 				
 				if (ingredientType != null) {
 					if (ingredientMap.containsKey("name")) {

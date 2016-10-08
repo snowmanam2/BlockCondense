@@ -1,10 +1,8 @@
 package com.gmail.snowmanam2.blockcondense;
 
-import java.util.logging.Level;
-
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.api.IItemDb;
@@ -29,8 +27,8 @@ public class ItemType {
 		name = getDefaultName();
 	}
 	
-	public static ItemType buildFromString (JavaPlugin plugin, String name) {
-		Essentials essentials = (Essentials)plugin.getServer().getPluginManager().getPlugin("Essentials");
+	public static ItemType buildFromString (String name) {
+		Essentials essentials = (Essentials)Bukkit.getServer().getPluginManager().getPlugin("Essentials");
 		if (essentials != null) {
 			IItemDb itemDB = essentials.getItemDb();
 			ItemStack itemStack;
@@ -43,10 +41,8 @@ public class ItemType {
 			}
 				
 			ItemType type = new ItemType(itemStack);
-			type.setName(itemDB.name(itemStack));
 			return type;
 		} else {
-			plugin.getLogger().log(Level.SEVERE, "Could not access Essentials plugin");
 			return null;
 		}
 	}
@@ -58,7 +54,14 @@ public class ItemType {
 	}
 	
 	private String getDefaultName () {
-		return item.getType().toString().toLowerCase().replaceAll("_", " ");
+		Essentials essentials = (Essentials)Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+		if (essentials != null) {
+			IItemDb itemDB = essentials.getItemDb();
+			
+			return itemDB.name(item);
+		} else {
+			return item.getType().toString().toLowerCase().replaceAll("_", " ");
+		}
 	}
 	
 	public String getName () {
