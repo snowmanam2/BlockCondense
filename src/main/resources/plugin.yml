@@ -9,9 +9,13 @@ commands:
     usage: |
            /<command> <recipe> - crafts according to <recipe>
            /<command> list - lists the available recipes
+           /<command> reload - reload the recipe list
     aliases: [bc]
     permission: blockcondense.blockcondense
 permissions:
   blockcondense.blockcondense:
     description: Access /blockcondense
     default: true
+  blockcondense.reload:
+    description: Reload the recipe list
+    default: op

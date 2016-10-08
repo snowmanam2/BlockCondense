@@ -22,12 +22,12 @@ public class RecipeManager {
 	public RecipeManager(BlockCondense plugin) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
-		recipeList = new HashMap<String, Recipe>();
 		
 		buildRecipeList();
 	}
 	
-	private void buildRecipeList() {
+	public void buildRecipeList() {
+		recipeList = new HashMap<String, Recipe>();
 		File recipeFile = new File(plugin.getDataFolder(), "recipes.yml");
 		
 		if (!recipeFile.exists()) {

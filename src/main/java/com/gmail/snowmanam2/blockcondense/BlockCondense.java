@@ -1,7 +1,6 @@
 package com.gmail.snowmanam2.blockcondense;
 
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +12,8 @@ public class BlockCondense extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		
-		recipeManager = new RecipeManager(this); 
+		recipeManager = new RecipeManager(this);
+		Messages.loadMessages(this);
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -30,9 +30,16 @@ public class BlockCondense extends JavaPlugin {
 			} else if (args[0].equalsIgnoreCase("help")){
 				return false;
 			} else if (args[0].equalsIgnoreCase("list")) {
-				player.sendMessage(ChatColor.AQUA+"Available recipes:");
 				String message = StringUtils.join(recipeManager.getRecipeList().toArray(), ", ");
-				player.sendMessage(ChatColor.AQUA+message);
+				player.sendMessage(Messages.get("recipeList", message));
+				return true;
+			} else if (args[0].equalsIgnoreCase("reload")) {
+				if (player.hasPermission("blockcondense.reload")) {
+					recipeManager.buildRecipeList();
+					player.sendMessage(Messages.get("reloadedRecipes"));
+				} else {
+					player.sendMessage(Messages.get("noPermissionReload"));
+				}
 				return true;
 			} else {
 				String recipeName = args[0];
@@ -43,10 +50,10 @@ public class BlockCondense extends JavaPlugin {
 						ConversionContext context = new ConversionContext(player);
 						recipe.doConversion(context);
 					} else {
-						player.sendMessage(ChatColor.RED+"You don't have permission for that recipe.");
+						player.sendMessage(Messages.get("noPermission"));
 					}
 				} else {
-					player.sendMessage(ChatColor.RED+"That recipe does not exist.");
+					player.sendMessage(Messages.get("recipeNotFound"));
 				}
 			}
 			

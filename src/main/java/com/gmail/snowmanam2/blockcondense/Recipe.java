@@ -2,8 +2,6 @@ package com.gmail.snowmanam2.blockcondense;
 
 import java.util.Set;
 
-import org.bukkit.ChatColor;
-
 public class Recipe {
 	private Set<Ingredient> ingredients;
 	private ItemType product;
@@ -24,7 +22,7 @@ public class Recipe {
 			productQty = Math.min(productQty, productAvailable);
 
 			if (productAvailable <= 0) {
-				context.sendMessage(ChatColor.RED.toString()+"Not enough "+ingredient.getName());
+				context.sendMessage(Messages.get("notEnoughIngredient", ingredient.getName()));
 			}
 		}
 		
@@ -32,13 +30,13 @@ public class Recipe {
 			return;
 		}
 		
-		context.sendMessage(ChatColor.GREEN.toString()+"Converting ingredients to "+productQty+" "+product.getName());
+		context.sendMessage(Messages.get("recipeConversionStart", productQty, product.getName()));
 		
 		for (Ingredient ingredient : ingredients) {
 			int leftoverQty = ingredient.processConversion(context, productQty);
 			
 			if (leftoverQty > 0) {
-				context.sendMessage(ChatColor.GREEN.toString()+"Returned "+leftoverQty+" "+ingredient.getName());
+				context.sendMessage(Messages.get("ingredientReturned", leftoverQty, ingredient.getName()));
 			}
 		}
 		

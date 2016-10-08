@@ -2,7 +2,6 @@ package com.gmail.snowmanam2.blockcondense;
 
 import java.math.BigDecimal;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.api.Economy;
@@ -31,7 +30,7 @@ public class EconomyWrapper {
 		try {
 			Economy.substract(player.getName(), amount);
 			String amountString = Economy.format(amount);
-			player.sendMessage(ChatColor.GRAY+amountString+" was taken from your account.");
+			player.sendMessage(Messages.get("moneyWithdraw", amountString));
 		} catch (UserDoesNotExistException e) {
 			
 		} catch (NoLoanPermittedException e) {
@@ -44,7 +43,8 @@ public class EconomyWrapper {
 	public void add(BigDecimal amount) {
 		try {
 			Economy.add(player.getName(), amount);
-			player.sendMessage(ChatColor.GREEN+"$"+amount.toPlainString()+" was added to your account.");
+			String amountString = Economy.format(amount);
+			player.sendMessage(Messages.get("moneyDeposit", amountString));
 		} catch (NoLoanPermittedException e) {
 			
 		} catch (ArithmeticException e) {

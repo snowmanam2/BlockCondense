@@ -1,0 +1,12 @@
+noPermission: "&4You don't have permission for that recipe."
+recipeNotFound: "&4That recipe does not exist."
+notEnoughIngredient: "&4Not enough {0}"
+recipeConversionStart: "&2Converting ingredients to {0} {1}"
+ingredientReturned: "&2Returned {0} {1}"
+moneyWithdraw: "&8{0} was taken from your account."
+moneyDeposit: "&2{0} was added to your account."
+recipeList: |
+            &b Available recipes:
+            &b {0}
+reloadedRecipes: "&2 Reloaded recipes"
+noPermissionReload: "&4You don't have permission to reload the recipe list."
