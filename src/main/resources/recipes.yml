@@ -1,0 +1,10 @@
+tnt:
+  product: {item: tnt, name: TNT}
+  ingredients:
+    - {item: money, amount: 1.5}
+    - {item: sulphur, amount: 5, name: Gunpowder}
+gold:
+  product: {item: goldingot, name: Gold Ingot}
+  ingredients:
+    - {item: goldnugget, amount: 9}
+

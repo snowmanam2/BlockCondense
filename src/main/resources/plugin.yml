@@ -2,28 +2,16 @@ name: BlockCondense
 main: com.gmail.snowmanam2.blockcondense.BlockCondense
 version: 0.0.1
 author: snowman_am2
+depend: [Essentials]
 commands:
-  condense:
-    description: Condense ingots into blocks
-    usage: /condense
-    aliases: [block]
-    permission: blockcondense.condense
-  gold:
-    description: Turn nuggets into ingots
-    usage: /gold
-    permission: blockcondense.gold
-  gunpowder:
-    description: Turn gunpowder into TNT
-    usage: /gunpowder
-    aliases: [gp, tnt]
-    permission: blockcondense.gunpowder
+  blockcondense:
+    description: Autocrafts from a set of ingredients
+    usage: |
+           /<command> <recipe> - crafts according to <recipe>
+           /<command> list - lists the available recipes
+    aliases: [bc]
+    permission: blockcondense.blockcondense
 permissions:
-  blockcondense.condense:
-    description: Access /condense
-    default: op
-  blockcondense.gold:
-    description: Access /gold
-    default: op
-  blockcondense.gunpowder:
-    description: Access /gunpowder
-    default: op
+  blockcondense.blockcondense:
+    description: Access /blockcondense
+    default: true

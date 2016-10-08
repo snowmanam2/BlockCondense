@@ -1,7 +1,13 @@
 package com.gmail.snowmanam2.blockcondense;
 
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.api.IItemDb;
 
 public class ItemType {
 	private ItemStack item;
@@ -21,6 +27,28 @@ public class ItemType {
 	public ItemType (ItemStack stack) {
 		item = stack.clone();
 		name = getDefaultName();
+	}
+	
+	public static ItemType buildFromString (JavaPlugin plugin, String name) {
+		Essentials essentials = (Essentials)plugin.getServer().getPluginManager().getPlugin("Essentials");
+		if (essentials != null) {
+			IItemDb itemDB = essentials.getItemDb();
+			ItemStack itemStack;
+
+			try {
+				/* Wow, this is bad practice. Why doesn't Essentials use a proper exception? */
+				itemStack = itemDB.get(name);
+			} catch (Exception e) {
+				return null;
+			}
+				
+			ItemType type = new ItemType(itemStack);
+			type.setName(itemDB.name(itemStack));
+			return type;
+		} else {
+			plugin.getLogger().log(Level.SEVERE, "Could not access Essentials plugin");
+			return null;
+		}
 	}
 	
 	public ItemStack toItemStack (int quantity) {

@@ -1,14 +1,14 @@
 package com.gmail.snowmanam2.blockcondense;
 
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 
 public class Recipe {
-	private List<Ingredient> ingredients;
+	private Set<Ingredient> ingredients;
 	private ItemType product;
 	
-	public Recipe (List<Ingredient> ingredients, ItemType product) {
+	public Recipe (Set<Ingredient> ingredients, ItemType product) {
 		this.ingredients = ingredients;
 		this.product = product;
 	}
